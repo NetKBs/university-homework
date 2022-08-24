@@ -1,8 +1,6 @@
+# University Homework :8
+
 ## About
-Homework using Python. I must code everything in Spanish, then keep it in mind.
+I'll be uploading here my programming homework from university. Nothing much to tell you, just that I need to code in Spanish the great majority of the time, so keep it in mind        
 
-## Homework
 
-![image](https://user-images.githubusercontent.com/76603397/186442077-6680a77e-6b54-4cac-ac2e-782a1206a65b.png)
-
-Mhmm I didn't understand well, but I have an idea.
