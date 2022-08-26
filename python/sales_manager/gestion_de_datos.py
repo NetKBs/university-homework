@@ -16,7 +16,10 @@ def usuarioDuplicado(nombre):
 
     return False
 
-def obtenerNombre(id):
+def obtenerNombre():
+    with open("actual_id", "r") as f:
+        id = f.read()
+
     with open("usuarios.log", "r") as f:
         for line in f:
             if id in line:

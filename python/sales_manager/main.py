@@ -22,6 +22,7 @@ def main():
 
     while True: 
         os.system("cls") # limpiar consola
+        print(f"Sesión de {gestion_de_datos.obtenerNombre()}\n")
 
         print("[1]-Archivo\n[2]-Movimientos\n[3]-Ayuda\n[4]-Salir")
         opcion = input(">>> ")
