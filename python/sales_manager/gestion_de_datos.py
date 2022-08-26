@@ -46,16 +46,20 @@ def mostrarUsuarios():
 
 
 def cambioClave():
-    """ Cambia la contraseña del usuario actual basandose en su nombre de usuario"""
+    """ Cambia la contraseña del usuario actual basandose en su id/serial"""
 
+    os.system("cls")
     print("CAMBIAR CONTRASEÑA")
     nueva_clave = input("\nNueva clave: ")
+
+    with open("actual_id", "r") as f:
+        actual_id = f.read() # sesion
 
     # Remplazamos
     for line in fileinput.input("usuarios.log", inplace=True):
         datos = line.replace("\n", "").split("|") # nombre,clave,id/serial
 
-        if datos[0] in line:
+        if actual_id in line:
             print(f"{datos[0]}|{nueva_clave}|{datos[2]}")
             continue
 
