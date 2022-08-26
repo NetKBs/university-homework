@@ -16,6 +16,12 @@ def usuarioDuplicado(nombre):
 
     return False
 
+def obtenerNombre(id):
+    with open("usuarios.log", "r") as f:
+        for line in f:
+            if id in line:
+                return line[:line.find("|")]
+
 def nuevoUsuario():
     """ Crear nuevo usuario (nombre, clave, id aleatorio) """
 
@@ -33,6 +39,9 @@ def nuevoUsuario():
 
     with open("usuarios.log", "a") as f: # lo registramos
         f.write(f"{nombre}|{clave}|{id}")
+
+    with open("actual_id", "w") as f: # sesion id
+            f.write(id)
 
     input("\nEnter...")
 
@@ -66,4 +75,35 @@ def cambioClave():
         print(line, end='') 
 
     input("\nEnter...")
+
+def cambioUsuario():
+    while True:
+        os.system("cls")
+        print("CAMBIAR DE USUARIO")
+
+        nombre = input("Nombre: ")
+        clave = input("Clave: ")
+        id = ""
+
+        with open("usuarios.log", "r") as f:
+            for line in f:
+                datos = line.replace("\n", "").split("|") # nombre,clave,id/serial
+                if nombre == datos[0] and clave in datos[1]:
+                    id = datos[2]
+                    break
+        
+        if id == "":
+            print("Las credenciales ingresadas no se encuentran registradas")
+            input("\nEnter...")
+            continue
+
+        with open("actual_id", "w") as f:
+            f.write(id)
+
+        print(f"\nSesión iniciada como {nombre}")
+        input("\nEnter...")
+        break
+
+
+
         

@@ -6,7 +6,7 @@ def inicio():
 
     while True:
         os.system("cls")
-        print("[1]-Usuarios\n[2]-Clientes\n[3]-Productos\n[4]-Cambios de usuarios\n[5]-Cambio de claves\n[6]-Salir")
+        print("[1]-Usuarios\n[2]-Clientes\n[3]-Productos\n[4]-Cambio de usuario\n[5]-Cambio de claves\n[6]-Salir")
         opcion = input(">>> ")
 
         if opcion == "1": #USUARIOS
@@ -31,7 +31,7 @@ def inicio():
             pass
 
         elif opcion == "4": # CAMBIO-USER
-            pass
+            gestion_de_datos.cambioUsuario()
 
         elif opcion == "5": # CAMBIO-CLAV
             gestion_de_datos.cambioClave()
