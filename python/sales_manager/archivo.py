@@ -1,3 +1,4 @@
+from optparse import Option
 import os 
 import gestion_de_datos
 
@@ -9,7 +10,19 @@ def inicio():
         opcion = input(">>> ")
 
         if opcion == "1": #USUARIOS
-            gestion_de_datos.mostrarUsuarios()
+            while True:
+                gestion_de_datos.mostrarUsuarios()
+                print("\n1.Salir\t2.Nuevo usuario")
+                option = input(">>> ")
+
+                if option == "1":
+                    break
+                elif option == "2":
+                    gestion_de_datos.nuevoUsuario()
+                else:
+                    input("Opción inválida\nEnter...")
+                    
+            
 
         elif opcion == "2": # CLIENTES
             pass

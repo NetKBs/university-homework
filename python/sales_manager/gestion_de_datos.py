@@ -8,6 +8,14 @@ def serial():
     return  ''.join([random.choice(string.ascii_letters
             + string.digits) for n in range(32)])
 
+def usuarioDuplicado(nombre):
+    with open("usuarios.log", "r") as f: 
+        for linea in f: 
+            if nombre in linea:
+                return True
+
+    return False
+
 def nuevoUsuario():
     """ Crear nuevo usuario (nombre, clave, id aleatorio) """
 
@@ -15,6 +23,11 @@ def nuevoUsuario():
     print("CREAR NUEVO USUARIO\n")
 
     nombre = input("Nombre: ").strip()
+    while usuarioDuplicado(nombre):
+        print("Ese usuario ya existe")    
+        nombre = input("Nombre: ").strip()
+
+
     clave = input("Clave: ").strip()
     id = serial()
 
@@ -31,23 +44,18 @@ def mostrarUsuarios():
         for linea in f:
             print("*", linea[:linea.find("|")])
 
-    input("\nEnter...")
-
 
 def cambioClave():
-    """ Cambia la contraseña del usuario actal basandose en su id/serial"""
+    """ Cambia la contraseña del usuario actual basandose en su nombre de usuario"""
 
     print("CAMBIAR CONTRASEÑA")
     nueva_clave = input("\nNueva clave: ")
-
-    with open("actual_id", "r") as f:
-        actual_id = f.read() # sesion
 
     # Remplazamos
     for line in fileinput.input("usuarios.log", inplace=True):
         datos = line.replace("\n", "").split("|") # nombre,clave,id/serial
 
-        if actual_id in line:
+        if datos[0] in line:
             print(f"{datos[0]}|{nueva_clave}|{datos[2]}")
             continue
 
