@@ -2,19 +2,23 @@ import os
 import gestion_de_datos, movimientos, archivo
 
 def main():
-    # si no existe datos de acceso de usuarios registrados
+    # creaar registro de usuarios si no existe
     if not os.path.exists("usuarios.log"):
         with open("usuarios.log", "w"): pass
 
-    # No hay usuarios
+    # si el registro de usuarios está vacío
+    # fuerza un registro
     if os.stat("usuarios.log").st_size == 0: 
         gestion_de_datos.nuevoUsuario()
-        # seleccionamos manualmente el  ID
-        with open("actual_id", "w") as f:
-            with open("usuarios.log", "r") as ff:
-                txt = ff.read()
-                pos = txt.find("|", txt.find("|")+1)
-                f.write(txt[pos-1:]) # serial id
+        # iniciamos manualmente la sesion con el  ID
+        with open("usuarios.log", "r") as f:
+            txt = f.read()
+            pos = txt.find("|", txt.find("|")+1)
+            id = txt[pos+1:] # serial id
+
+        # establacemos id
+        with open("actual_id", "w") as f: 
+            f.write(id)
 
     while True: 
         os.system("cls") # limpiar consola

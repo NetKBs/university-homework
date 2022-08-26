@@ -21,7 +21,7 @@ def inicio():
             pass
 
         elif opcion == "5": # CAMBIO-CLAV
-            pass
+            gestion_de_datos.cambioClave()
 
         elif opcion == "6": # SALIR
             break
