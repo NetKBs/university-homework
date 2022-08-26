@@ -1,14 +1,15 @@
 import os 
+import gestion_de_datos
 
 def inicio():
-    os.system("cls")
 
     while True:
+        os.system("cls")
         print("[1]-Usuarios\n[2]-Clientes\n[3]-Productos\n[4]-Cambios de usuarios\n[5]-Cambio de claves\n[6]-Salir")
         opcion = input(">>> ")
 
         if opcion == "1": #USUARIOS
-            pass
+            gestion_de_datos.mostrarUsuarios()
 
         elif opcion == "2": # CLIENTES
             pass

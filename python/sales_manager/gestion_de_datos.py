@@ -18,6 +18,14 @@ def nuevoUsuario():
     id = serial()
 
     with open("usuarios.log", "a") as f:
-        f.write(f"{nombre}|{clave}|{id}")
+        f.write(f"{nombre.strip()}|{clave.strip()}|{id}")
 
-    input("\nEnter.")
+    input("\nEnter...")
+
+def mostrarUsuarios():
+    os.system("cls")
+    with open("usuarios.log", "r") as f: 
+        for linea in f:
+            print("*", linea[:linea.find("|")])
+
+    input("\nEnter...")
