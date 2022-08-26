@@ -1,4 +1,3 @@
-from optparse import Option
 import os 
 import gestion_de_datos
 
@@ -6,18 +5,18 @@ def inicio():
 
     while True:
         os.system("cls")
-        print("[1]-Usuarios\n[2]-Clientes\n[3]-Productos\n[4]-Cambio de usuario\n[5]-Cambio de claves\n[6]-Salir")
+        print("[1]-Usuarios\n[2]-Clientes\n[3]-Productos\n[4]-Cambio de usuario\n[5]-Cambio de claves\n[6]-Atrás")
         opcion = input(">>> ")
 
         if opcion == "1": #USUARIOS
             while True:
                 gestion_de_datos.mostrarUsuarios()
-                print("\n1.Salir\t2.Nuevo usuario")
-                option = input(">>> ")
+                print("\n1.Atrás\t2.Nuevo")
+                opcion = input(">>> ")
 
-                if option == "1":
+                if opcion == "1":
                     break
-                elif option == "2":
+                elif opcion == "2":
                     gestion_de_datos.nuevoUsuario()
                 else:
                     input("Opción inválida\nEnter...")
@@ -25,7 +24,19 @@ def inicio():
             
 
         elif opcion == "2": # CLIENTES
-            pass
+            while True:
+                gestion_de_datos.mostrarClientes()
+                print("\n1.Atrás\t2.Nuevo\t3.Eliminar")
+                opcion = input(">>> ")
+
+                if opcion == "1":
+                    break
+                elif opcion == "2":
+                    gestion_de_datos.agregarClientes()
+                elif opcion == "3":
+                    gestion_de_datos.eliminarCliente()
+                else: 
+                    input("Opción inválida\nEnter...")
 
         elif opcion == "3": # PRODUCTOS
             pass

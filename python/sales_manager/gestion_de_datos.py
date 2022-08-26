@@ -36,12 +36,12 @@ def nuevoUsuario():
         print("Ese usuario ya existe")    
         nombre = input("Nombre: ").strip()
 
-
     clave = input("Clave: ").strip()
     id = serial()
 
     with open("usuarios.log", "a") as f: # lo registramos
         f.write(f"{nombre}|{clave}|{id}")
+        f.write("\n")
 
     with open("actual_id", "w") as f: # sesion id
             f.write(id)
@@ -98,7 +98,7 @@ def cambioUsuario():
         if id == "":
             print("Las credenciales ingresadas no se encuentran registradas")
             input("\nEnter...")
-            continue
+            break
 
         with open("actual_id", "w") as f:
             f.write(id)
@@ -107,6 +107,30 @@ def cambioUsuario():
         input("\nEnter...")
         break
 
+def mostrarClientes():
+    os.system("cls")
+    print("CLIENTES")
+    if not os.path.exists(f"./datos/{obtenerNombre()}.cli"):
+        with open(f"./datos/{obtenerNombre()}.cli", "w"): pass
 
+    with open(f"./datos/{obtenerNombre()}.cli", "r") as f:
+        for linea in f:
+            print("*", linea)
 
+def agregarClientes():
+    os.system("cls")
+    print("AGREGAR NUEVO CLIENTE")
+
+    cliente = input("Nombre: ").strip()
+    with open(f"./datos/{obtenerNombre()}.cli", "a") as f:
+        f.write(cliente+"\n")
         
+def eliminarCliente():
+    mostrarClientes()
+    print("ELIMINAR CLIENTE")
+    cliente = input("Nombre: ").strip()
+
+    for line in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
+        if cliente in line: # eliminamos cliente
+            continue
+        print(line, end='') 

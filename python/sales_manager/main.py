@@ -2,6 +2,10 @@ import os
 import gestion_de_datos, movimientos, archivo
 
 def main():
+    # crear carpeta de datos de usuario si no existe
+    if not os.path.exists("./datos"):
+        os.mkdir("datos")
+        
     # creaar registro de usuarios si no existe
     if not os.path.exists("usuarios.log"):
         with open("usuarios.log", "w"): pass
