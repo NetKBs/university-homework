@@ -25,6 +25,16 @@ def obtenerNombre():
             if id in line:
                 return line[:line.find("|")]
 
+# ----------------------- MANEJO DE USUARIOS --------------------------#
+def mostrarUsuarios():
+    """ Muestra una lista de los nombres de los usuaios registrados """
+
+    os.system("cls")
+    with open("usuarios.log", "r") as f: 
+        for linea in f:
+            print("*", linea[:linea.find("|")])
+
+
 def nuevoUsuario():
     """ Crear nuevo usuario (nombre, clave, id aleatorio) """
 
@@ -48,36 +58,31 @@ def nuevoUsuario():
 
     input("\nEnter...")
 
-def mostrarUsuarios():
-    """ Muestra una lista de los nombres de los usuaios registrados """
+def eliminarUsuario():
+    mostrarUsuarios()
 
-    os.system("cls")
-    with open("usuarios.log", "r") as f: 
-        for linea in f:
-            print("*", linea[:linea.find("|")])
+    print("ELIMINAR USUARIO")
+    nombre = input("Nombre: ")
+    user_actual = obtenerNombre()
 
+    if nombre == user_actual:
+        print("No puedes eliminar la sesión actual")
+        input("\nEnter...")
 
-def cambioClave():
-    """ Cambia la contraseña del usuario actual basandose en su id/serial"""
+    else:
+        for linea in fileinput.input("usuarios.log", inplace=True):
+            previo = linea[:linea.find("|")]
+            if previo == nombre:
+                continue
 
-    os.system("cls")
-    print("CAMBIAR CONTRASEÑA")
-    nueva_clave = input("\nNueva clave: ")
+            print(linea, end="")
 
-    with open("actual_id", "r") as f:
-        actual_id = f.read() # sesion
+        if os.path.exists(f"./datos/{nombre}.cli"):
+            os.remove(f"./datos/{nombre}.cli")
 
-    # Remplazamos
-    for line in fileinput.input("usuarios.log", inplace=True):
-        datos = line.replace("\n", "").split("|") # nombre,clave,id/serial
+        if os.path.exists(f"./datos/{nombre}.pro"):
+            os.remove(f"./datos/{nombre}.pro")
 
-        if actual_id in line:
-            print(f"{datos[0]}|{nueva_clave}|{datos[2]}")
-            continue
-
-        print(line, end='') 
-
-    input("\nEnter...")
 
 def cambioUsuario():
     while True:
@@ -107,6 +112,30 @@ def cambioUsuario():
         input("\nEnter...")
         break
 
+def cambioClave():
+    """ Cambia la contraseña del usuario actual basandose en su id/serial"""
+
+    os.system("cls")
+    print("CAMBIAR CONTRASEÑA")
+    nueva_clave = input("\nNueva clave: ")
+
+    with open("actual_id", "r") as f:
+        actual_id = f.read() # sesion
+
+    # Remplazamos
+    for line in fileinput.input("usuarios.log", inplace=True):
+        datos = line.replace("\n", "").split("|") # nombre,clave,id/serial
+
+        if actual_id in line:
+            print(f"{datos[0]}|{nueva_clave}|{datos[2]}")
+            continue
+
+        print(line, end='') 
+
+    input("\nEnter...")
+
+
+# ----------------------- MANEJO DE CLIENTES --------------------------#
 def mostrarClientes():
     os.system("cls")
     print("CLIENTES")
