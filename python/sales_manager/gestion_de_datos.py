@@ -234,3 +234,21 @@ def eliminarProductos():
                 continue
 
         print(linea, end='') 
+
+
+# ----------------------- MANEJO DE FACTURAS --------------------------#
+def mostrarFacturas():
+    os.system("cls")
+    print("FACTURAS")
+
+    if not os.path.exists(f"./datos/{obtenerNombre()}.mov"):
+        with open(f"./datos/{obtenerNombre()}.mov", "w"): pass
+   
+
+def nuevaFactura():
+    os.system("cls")
+    print("NUEVA FACTURA")
+    
+    if not os.path.exists(f"./datos/{obtenerNombre()}.mov"):
+        with open(f"./datos/{obtenerNombre()}.mov", "w"): pass
+
