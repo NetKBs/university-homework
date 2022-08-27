@@ -162,28 +162,35 @@ def mostrarClientes():
 
     with open(f"./datos/{obtenerNombre()}.cli", "r") as f:
         for linea in f:
-            print("*", linea)
+            datos = linea.split("|")
+            print(f"* {datos[0]} {datos[1]} {datos[2]} {datos[3]}")
 
 def agregarClientes(nombre, ci, compras, gastos):
     if not clienteDuplicado(nombre):
         with open(f"./datos/{obtenerNombre()}.cli", "a") as f:
             f.write(f"{nombre}|{ci}|{compras}|{gastos}")
+            f.write("\n")
 
     else:
         for linea in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
             datos = linea.split("|")
+            if ci == datos[1]: 
+                print(f"* {datos[0]} {datos[1]} {compras + int(datos[2])} {gastos + float(datos[3])}")
 
-            if nombre.lower() == datos.lower(): 
-                print(f"{nombre}|{ci}|{compras + datos[2]}|{gastos + datos[3]}")
-                
         
 def eliminarCliente():
+    if os.stat(f"./datos/{obtenerNombre()}.cli").st_size == 0:
+        input("No hay clientes para eliminar\nEnter...")
+        return 1
+
     mostrarClientes()
     print("ELIMINAR CLIENTE")
-    cliente = input("Nombre: ").strip()
+    cedula = input("Cedula: ").strip()
+    while not cedula.isdigit():
+        cedula = input("Cedula: ").strip()
 
     for linea in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
-        if cliente in linea: # eliminamos cliente
+        if cedula in linea: # eliminamos cliente
             continue
         print(linea, end='') 
 
@@ -264,8 +271,11 @@ def mostrarFacturas():
 def nuevaFactura():
     os.system("cls")
 
-    # Si no hay productos agregados o no existe de por sí el archivo de datos
-    if not os.path.exists(f"./datos/{obtenerNombre()}.pro" or os.stat(f"./datos/{obtenerNombre()}.pro").st_size == 0 ):
+
+    if not os.path.exists(f"./datos/{obtenerNombre()}.pro"):
+        with open(f"./datos/{obtenerNombre()}.pro", "w"): pass
+
+    if os.stat(f"./datos/{obtenerNombre()}.pro").st_size == 0:
         print("No se puede realizar una factura sin productos en el inventario")
         input("\nEnter..")
         return 1
@@ -342,9 +352,9 @@ def nuevaFactura():
 
             if seguir == "1":
                 os.system("cls")
-                if not productoDuplicado(producto):
+                if os.stat(f"./datos/{obtenerNombre()}.mov").st_size == 0:
                     input("No hay más productos en el inventario\nEnter...")
-                    return 1
+                    continue
                 else:
                     mostrarProductos()
                     break
@@ -362,13 +372,13 @@ def nuevaFactura():
 
                     for i in range(len(registro["productos"])):
                         # imprimimos los productos, cantidades y sus precios
-                        f.write(f"  {i+1}- {registro['productos'][i]}\t{registro['cantidades'][i]}u ")
+                        f.write(f"{i+1}- {registro['productos'][i]}\t{registro['cantidades'][i]}u ")
                         f.write(f"\tBs{registro['precios'][i]}\n")
 
                         # calculamos el monto total de los productos y precios
                         registro["monto"] += registro["precios"][i] * int(registro["cantidades"][i])
                         # calculamos cantidad de productos totales comprados
-                        cantidad_total += registro["cantidades"][i]
+                        cantidad_total += int(registro["cantidades"][i])
 
                     f.write(40*"-")
                     f.write(f"\n  Monto: Bs{registro['monto']}\n")
