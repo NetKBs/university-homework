@@ -27,14 +27,12 @@ def inicio():
         elif opcion == "2": # CLIENTES
             while True:
                 gestion_de_datos.mostrarClientes()
-                print("\n1.Atrás\t2.Nuevo\t3.Eliminar")
+                print("\n1.Atrás\t2.Eliminar")
                 opcion = input(">>> ")
 
                 if opcion == "1":
                     break
                 elif opcion == "2":
-                    gestion_de_datos.agregarClientes()
-                elif opcion == "3":
                     gestion_de_datos.eliminarCliente()
                 else: 
                     input("Opción inválida\nEnter...")

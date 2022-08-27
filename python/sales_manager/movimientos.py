@@ -10,7 +10,16 @@ def inicio():
         if opcion == "1":
             gestion_de_datos.nuevaFactura()
         elif opcion == "2":
-            gestion_de_datos.mostrarFacturas()
+            while True:
+                gestion_de_datos.mostrarFacturas()
+                print("1.Atrás")
+                opcion = input(">>> ")
+
+                if opcion == "1":
+                    break
+                else:
+                    input("Opción inválida\nEnter...")
+                    
         elif opcion == "3":
             break
         else:

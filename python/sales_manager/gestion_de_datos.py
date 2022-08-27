@@ -33,6 +33,14 @@ def productoDuplicado(producto):
 
     return False
 
+def clienteDuplicado(cliente):
+    with open(f"./datos/{obtenerNombre()}.cli", "r") as f: 
+        for linea in f:
+            if cliente.lower() in linea.lower():
+                return True
+    
+    return False
+
 
 # ----------------------- MANEJO DE USUARIOS --------------------------#
 def mostrarUsuarios():
@@ -156,13 +164,18 @@ def mostrarClientes():
         for linea in f:
             print("*", linea)
 
-def agregarClientes():
-    os.system("cls")
-    print("AGREGAR NUEVO CLIENTE")
+def agregarClientes(nombre, ci, compras, gastos):
+    if not clienteDuplicado(nombre):
+        with open(f"./datos/{obtenerNombre()}.cli", "a") as f:
+            f.write(f"{nombre}|{ci}|{compras}|{gastos}")
 
-    cliente = input("Nombre: ").strip()
-    with open(f"./datos/{obtenerNombre()}.cli", "a") as f:
-        f.write(cliente+"\n")
+    else:
+        for linea in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
+            datos = linea.split("|")
+
+            if nombre.lower() == datos.lower(): 
+                print(f"{nombre}|{ci}|{compras + datos[2]}|{gastos + datos[3]}")
+                
         
 def eliminarCliente():
     mostrarClientes()
@@ -185,8 +198,8 @@ def mostrarProductos():
 
     with open(f"./datos/{obtenerNombre()}.pro", "r") as f: 
         for linea in f:
-            datos = linea.split()
-            print(f"{datos[0]}\t{datos[1]}")
+            datos = linea.split("|")
+            print(f" *{datos[0]}\t{datos[1]}")
 
 
 def agregarProductos():
@@ -195,14 +208,13 @@ def agregarProductos():
 
     producto = input("Nombre: ").strip()
 
-    cantidad = input("Cantidad: "). strip()
+    cantidad = input("Cantidad: ").strip()
     while not cantidad.isdigit() or cantidad == "0": # no es un entero
-        print("Valor inválido.")
-        cantidad = input("Cantidad: "). strip()
+        cantidad = input("Valor inválido\nCantidad: ").strip()
 
     if not productoDuplicado(producto):
         with open(f"./datos/{obtenerNombre()}.pro", "a") as f:
-            f.write(f"{producto} {cantidad}")
+            f.write(f"{producto}|{cantidad}")
             f.write("\n")
 
     else:
@@ -210,7 +222,7 @@ def agregarProductos():
             datos = linea.split()
 
             if datos[0].lower() in linea.lower():
-                print(f"{datos[0]} {int(datos[1]) + int(cantidad)}")
+                print(f"{datos[0]}|{int(datos[1]) + int(cantidad)}")
                 continue
 
             print(linea, end='') 
@@ -230,7 +242,7 @@ def eliminarProductos():
             if cantidad_restante <= 0:
                 continue
             else:
-                print(f"{datos[0]} {cantidad_restante}")
+                print(f"{datos[0]}|{cantidad_restante}")
                 continue
 
         print(linea, end='') 
@@ -239,16 +251,138 @@ def eliminarProductos():
 # ----------------------- MANEJO DE FACTURAS --------------------------#
 def mostrarFacturas():
     os.system("cls")
-    print("FACTURAS")
+    print("")
 
     if not os.path.exists(f"./datos/{obtenerNombre()}.mov"):
         with open(f"./datos/{obtenerNombre()}.mov", "w"): pass
+
+    with open(f"./datos/{obtenerNombre()}.mov", "r") as f:
+        for linea in f:
+            print(linea)
    
 
 def nuevaFactura():
     os.system("cls")
-    print("NUEVA FACTURA")
-    
+
+    # Si no hay productos agregados o no existe de por sí el archivo de datos
+    if not os.path.exists(f"./datos/{obtenerNombre()}.pro" or os.stat(f"./datos/{obtenerNombre()}.pro").st_size == 0 ):
+        print("No se puede realizar una factura sin productos en el inventario")
+        input("\nEnter..")
+        return 1
+
     if not os.path.exists(f"./datos/{obtenerNombre()}.mov"):
         with open(f"./datos/{obtenerNombre()}.mov", "w"): pass
+
+    # donde se guardarán los previos
+    registro = {
+        "cliente":"",
+        "cedula":"" ,
+        "productos": [],
+        "precios": [],
+        "cantidades": [],
+        "monto": 0
+    }
+
+    print("NUEVA FACTURA")
+
+    cliente = input("Nombre del Cliente: ").strip()
+
+    cedula = input("Cédula: ").strip() 
+    while not cedula.isdigit(): # no es un entero
+        cedula = input("Valor inválido\nCédula: ")
+
+    registro["cliente"] = cliente
+    registro["cedula"] = cedula
+    mostrarProductos()
+
+    while True:
+        producto = input("\nElegir Producto: ").strip()
+
+        if not productoDuplicado(producto):
+            input("Ese producto no existe\nEnter...")
+            os.system("cls")
+            mostrarProductos()
+            continue
+
+        cantidad = input("Cantidad: ").strip()
+        while not cantidad.isdigit():
+            cantidad = input("Valor inválido\nCantidad: ")
+
+
+        for linea in fileinput.input(f"./datos/{obtenerNombre()}.pro", inplace=True):
+            datos = linea.split("|")
+            if producto.lower() == datos[0].lower(): 
+                cantidad_restante = int(datos[1]) - int(cantidad)
+                # si es negativo, entonces la cantidad a eliminar será
+                # la cantidad de ese producto disponible
+                if cantidad_restante <= 0:
+                    cantidad = datos[1]
+                    continue
+                else:
+                    print(f"{datos[0]}|{cantidad_restante}")
+                    continue
+                
+            print(linea, end='') 
+
+        while True:
+            try: 
+                precio = float(input("Precio: "))
+                break
+            except ValueError: 
+                print("Valor inválido")
+                continue
+        
+        registro["productos"].append(producto) 
+        registro["precios"].append(precio)
+        registro["cantidades"].append(cantidad)
+        
+        while True:
+            print("\n1.Agregar otro arituclo\t2.Terminar factura")
+            seguir = input(">>> ")
+
+            if seguir == "1":
+                os.system("cls")
+                if not productoDuplicado(producto):
+                    input("No hay más productos en el inventario\nEnter...")
+                    return 1
+                else:
+                    mostrarProductos()
+                    break
+
+            elif seguir == "2":
+                # cuantos productos en total se compraron
+                cantidad_total = 0
+
+                # Guardamos la factura
+                with open(f"./datos/{obtenerNombre()}.mov", "a") as f:
+                    f.write(40*"-")
+                    f.write(f"\n  {cliente}\t|\tC.I {cedula}\n")
+                    f.write(40*"-")
+                    f.write("\n")
+
+                    for i in range(len(registro["productos"])):
+                        # imprimimos los productos, cantidades y sus precios
+                        f.write(f"  {i+1}- {registro['productos'][i]}\t{registro['cantidades'][i]}u ")
+                        f.write(f"\tBs{registro['precios'][i]}\n")
+
+                        # calculamos el monto total de los productos y precios
+                        registro["monto"] += registro["precios"][i] * int(registro["cantidades"][i])
+                        # calculamos cantidad de productos totales comprados
+                        cantidad_total += registro["cantidades"][i]
+
+                    f.write(40*"-")
+                    f.write(f"\n  Monto: Bs{registro['monto']}\n")
+                    f.write(40*"-")
+                    f.write("\n")
+                    f.write(40*"#")
+                    f.write("\n")
+
+                # Registramos cliente
+                agregarClientes(cliente, cedula, cantidad_total, registro["monto"])
+
+                return 0 
+            else:
+                input("\nOpción inválida")
+
+    
 
