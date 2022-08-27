@@ -8,6 +8,15 @@ def serial():
     return  ''.join([random.choice(string.ascii_letters
             + string.digits) for n in range(32)])
 
+def obtenerNombre():
+    with open("actual_id", "r") as f:
+        id = f.read()
+
+    with open("usuarios.log", "r") as f:
+        for linea in f:
+            if id in linea:
+                return linea[:linea.find("|")]
+
 def usuarioDuplicado(nombre):
     with open("usuarios.log", "r") as f: 
         for linea in f: 
@@ -16,14 +25,14 @@ def usuarioDuplicado(nombre):
 
     return False
 
-def obtenerNombre():
-    with open("actual_id", "r") as f:
-        id = f.read()
+def productoDuplicado(producto):
+    with open(f"./datos/{obtenerNombre()}.pro", "r") as f: 
+        for linea in f: 
+            if producto.lower() in linea.lower():
+                return True
 
-    with open("usuarios.log", "r") as f:
-        for line in f:
-            if id in line:
-                return line[:line.find("|")]
+    return False
+
 
 # ----------------------- MANEJO DE USUARIOS --------------------------#
 def mostrarUsuarios():
@@ -94,8 +103,8 @@ def cambioUsuario():
         id = ""
 
         with open("usuarios.log", "r") as f:
-            for line in f:
-                datos = line.replace("\n", "").split("|") # nombre,clave,id/serial
+            for linea in f:
+                datos = linea.replace("\n", "").split("|") # nombre,clave,id/serial
                 if nombre == datos[0] and clave in datos[1]:
                     id = datos[2]
                     break
@@ -123,14 +132,14 @@ def cambioClave():
         actual_id = f.read() # sesion
 
     # Remplazamos
-    for line in fileinput.input("usuarios.log", inplace=True):
-        datos = line.replace("\n", "").split("|") # nombre,clave,id/serial
+    for linea in fileinput.input("usuarios.log", inplace=True):
+        datos = linea.replace("\n", "").split("|") # nombre,clave,id/serial
 
-        if actual_id in line:
+        if actual_id in linea:
             print(f"{datos[0]}|{nueva_clave}|{datos[2]}")
             continue
 
-        print(line, end='') 
+        print(linea, end='') 
 
     input("\nEnter...")
 
@@ -160,10 +169,10 @@ def eliminarCliente():
     print("ELIMINAR CLIENTE")
     cliente = input("Nombre: ").strip()
 
-    for line in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
-        if cliente in line: # eliminamos cliente
+    for linea in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
+        if cliente in linea: # eliminamos cliente
             continue
-        print(line, end='') 
+        print(linea, end='') 
 
 
 # ----------------------- MANEJO DE PRODUCTOS --------------------------#
@@ -190,9 +199,20 @@ def agregarProductos():
         print("Valor inválido.")
         cantidad = input("Cantidad: "). strip()
 
-    with open(f"./datos/{obtenerNombre()}.pro", "a") as f:
-        f.write(f"{producto} {cantidad}")
-        f.write("\n")
+    if not productoDuplicado(producto):
+        with open(f"./datos/{obtenerNombre()}.pro", "a") as f:
+            f.write(f"{producto} {cantidad}")
+            f.write("\n")
+
+    else:
+        for linea in fileinput.input(f"./datos/{obtenerNombre()}.pro", inplace=True):
+            datos = linea.split()
+
+            if datos[0].lower() in linea.lower():
+                print(f"{datos[0]} {int(datos[1])+int(cantidad)}")
+                continue
+
+            print(linea, end='') 
 
 
 
@@ -201,7 +221,8 @@ def eliminarProductos():
     print("ELIMINAR PRODUCTO")
     producto = input("Nombre: ").strip()
 
-    for line in fileinput.input(f"./datos/{obtenerNombre()}.pro", inplace=True):
-        if producto in line: # eliminamos cliente
+    for linea in fileinput.input(f"./datos/{obtenerNombre()}.pro", inplace=True):
+        if producto in linea: 
             continue
-        print(line, end='') 
+
+        print(linea, end='') 
