@@ -194,8 +194,9 @@ def agregarProductos():
     print("AGREGAR UN PRODUCTO")
 
     producto = input("Nombre: ").strip()
+
     cantidad = input("Cantidad: "). strip()
-    while not cantidad.isdigit(): # no es un entero
+    while not cantidad.isdigit() or cantidad == "0": # no es un entero
         print("Valor inválido.")
         cantidad = input("Cantidad: "). strip()
 
@@ -209,20 +210,27 @@ def agregarProductos():
             datos = linea.split()
 
             if datos[0].lower() in linea.lower():
-                print(f"{datos[0]} {int(datos[1])+int(cantidad)}")
+                print(f"{datos[0]} {int(datos[1]) + int(cantidad)}")
                 continue
 
             print(linea, end='') 
-
 
 
 def eliminarProductos():
     mostrarProductos()
     print("ELIMINAR PRODUCTO")
     producto = input("Nombre: ").strip()
+    cantidad = input("Cantidad: ").strip()
 
     for linea in fileinput.input(f"./datos/{obtenerNombre()}.pro", inplace=True):
+        datos = linea.split()
         if producto in linea: 
-            continue
+            cantidad_restante = int(datos[1]) - int(cantidad)
+
+            if cantidad_restante <= 0:
+                continue
+            else:
+                print(f"{datos[0]} {cantidad_restante}")
+                continue
 
         print(linea, end='') 
