@@ -39,8 +39,23 @@ def inicio():
                 else: 
                     input("Opción inválida\nEnter...")
 
+
         elif opcion == "3": # PRODUCTOS
-            pass
+            while True:
+                gestion_de_datos.mostrarProductos()
+            
+                print("\n1.Atrás\t2.Nuevo\t3.Eliminar")
+                opcion = input(">>> ")
+
+                if opcion == "1":
+                    break
+                elif opcion == "2":
+                    gestion_de_datos.agregarProductos()
+                elif opcion == "3":
+                    gestion_de_datos.eliminarProductos()
+                else: 
+                    input("Opción inválida\nEnter...")
+
 
         elif opcion == "4": # CAMBIO-USER
             gestion_de_datos.cambioUsuario()

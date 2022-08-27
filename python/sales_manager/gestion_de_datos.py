@@ -139,6 +139,7 @@ def cambioClave():
 def mostrarClientes():
     os.system("cls")
     print("CLIENTES")
+
     if not os.path.exists(f"./datos/{obtenerNombre()}.cli"):
         with open(f"./datos/{obtenerNombre()}.cli", "w"): pass
 
@@ -161,5 +162,46 @@ def eliminarCliente():
 
     for line in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
         if cliente in line: # eliminamos cliente
+            continue
+        print(line, end='') 
+
+
+# ----------------------- MANEJO DE PRODUCTOS --------------------------#
+def mostrarProductos():
+    os.system("cls")
+    print("INVENTARIO DE PRODUCTOS REGISTRADOS")
+
+    if not os.path.exists(f"./datos/{obtenerNombre()}.pro"):
+        with open(f"./datos/{obtenerNombre()}.pro", "w"): pass
+
+    with open(f"./datos/{obtenerNombre()}.pro", "r") as f: 
+        for linea in f:
+            datos = linea.split()
+            print(f"{datos[0]}\t{datos[1]}")
+
+
+def agregarProductos():
+    os.system("cls")
+    print("AGREGAR UN PRODUCTO")
+
+    producto = input("Nombre: ").strip()
+    cantidad = input("Cantidad: "). strip()
+    while not cantidad.isdigit(): # no es un entero
+        print("Valor inválido.")
+        cantidad = input("Cantidad: "). strip()
+
+    with open(f"./datos/{obtenerNombre()}.pro", "a") as f:
+        f.write(f"{producto} {cantidad}")
+        f.write("\n")
+
+
+
+def eliminarProductos():
+    mostrarProductos()
+    print("ELIMINAR PRODUCTO")
+    producto = input("Nombre: ").strip()
+
+    for line in fileinput.input(f"./datos/{obtenerNombre()}.pro", inplace=True):
+        if producto in line: # eliminamos cliente
             continue
         print(line, end='') 
