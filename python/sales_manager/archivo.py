@@ -11,7 +11,9 @@ def inicio():
         if opcion == "1": #USUARIOS
             while True:
                 gestion_de_datos.mostrarUsuarios()
-                print("\n1.Atrás\t2.Nuevo\t3.Eliminar")
+
+                print("\n"); print(50*"-")
+                print(" 1.Atrás\t2.Nuevo\t\t3.Eliminar")
                 opcion = input(">>> ")
 
                 if opcion == "1":
@@ -21,7 +23,9 @@ def inicio():
                 elif opcion == "3":
                     gestion_de_datos.eliminarUsuario()
                 else:
-                    input("Opción inválida\nEnter...")
+                    print("\n");print(40*"-")
+                    print(" !!!Opción inválida!!!")
+                    input("Enter...")
             
 
         elif opcion == "2": # CLIENTES
@@ -65,4 +69,4 @@ def inicio():
             break
 
         else:
-            input("Opción inválida.\nEnter...")
+            input("Invalido")

@@ -5,12 +5,12 @@ import fileinput
 
 def serial():
     """ Devuelve un serial id aleatorios de 32 carácteres  ASCII y números """
+
     return  ''.join([random.choice(string.ascii_letters
             + string.digits) for n in range(32)])
 
 def obtenerNombre():
-    """ Devuelve el nombre de usuario de la cuenta actual 
-        usando el serial de referencia"""
+    """  Devuelve el nombre de usuario de la cuenta actual usando el serial de referencia """
 
     with open("actual_id", "r") as f:
         id = f.read() # serial
@@ -26,6 +26,7 @@ def duplicado(objetivo, dato):
         Recibe el parámetro objetivo que especifica que queremos comprar, este acepta 'usuario, producto o cliente'
         el segundo parámetro dato, será el que se verificará si tiene un duplicado 
     """
+
     if objetivo == "usuario":
         ruta = "usuarios.log" 
     elif objetivo == "producto":
@@ -39,106 +40,145 @@ def duplicado(objetivo, dato):
                 return True
     return False
 
+# ---------------------------------------------------------------------#
 # ----------------------- MANEJO DE USUARIOS --------------------------#
+# ---------------------------------------------------------------------#
+
 def mostrarUsuarios():
     """ Muestra una lista de los nombres de los usuaios registrados """
 
     os.system("cls")
+    print(50*"-")
+    print("\tLISTA DE USUARIOS REGISTRADOS")
+    print(50*"-")
+
     with open("usuarios.log", "r") as f: 
-        for linea in f:
-            print("*", linea[:linea.find("|")])
+        for num, linea in enumerate(f):
+            print(f" {num+1}- ", linea[:linea.find("|")])
 
 
 def nuevoUsuario():
     """ Crear nuevo usuario (nombre, clave, id aleatorio) """
 
     os.system("cls")
-    print("CREAR NUEVO USUARIO\n")
+    print(40*"-")
+    print("\tCREAR NUEVO USUARIO\n")
+    print(40*"-")
 
-    nombre = input("Nombre: ").strip()
-    while duplicado("usuario", nombre):
-        print("Ese usuario ya existe")    
-        nombre = input("Nombre: ").strip()
+    nombre = input("\n Nombre: ").strip()
 
-    clave = input("Clave: ").strip()
+    # evitamos duplicados
+    while duplicado("usuario", nombre): 
+        print("\n !!!Ese usuario ya existe!!!")    
+        nombre = input(" Nombre: ").strip()
+
+    clave = input("\n Clave: ").strip()
     id = serial()
 
-    with open("usuarios.log", "a") as f: # lo registramos
+    # lo registramos
+    with open("usuarios.log", "a") as f: 
         f.write(f"{nombre}|{clave}|{id}")
         f.write("\n")
 
-    with open("actual_id", "w") as f: # sesion id
+    # establecemos el id/serial
+    with open("actual_id", "w") as f: 
             f.write(id)
 
-    input("\nEnter...")
+    print("\n"); print(40*"-")
+    print(" !!!Usuario creado con éxito!!!")
+    input(" Enter...")
 
 def eliminarUsuario():
-    mostrarUsuarios()
+    """ Elimina un usuario usando el nombre del mismo """
 
-    print("ELIMINAR USUARIO")
-    nombre = input("Nombre: ")
+    mostrarUsuarios()
+    print(40*"-")
+    print("\tELIMINAR USUARIO")
+    print(40*"-")
+
+    nombre = input("\n Nombre: ")
     user_actual = obtenerNombre()
 
-    if nombre == user_actual:
-        print("No puedes eliminar la sesión actual")
-        input("\nEnter...")
+    if nombre.lower() == user_actual.lower():
+        print("\n"); print(40*"-")
+        print(" !!!No puedes eliminar la sesión actual!!!")
+        input(" Enter...")
 
     else:
         for linea in fileinput.input("usuarios.log", inplace=True):
-            previo = linea[:linea.find("|")]
-            if previo == nombre:
+            nombre_en_archivo = linea[:linea.find("|")]
+            if nombre_en_archivo.lower() == nombre.lower(): # eliminamos
                 continue
 
-            print(linea, end="")
+            print(linea, end="") # mantenemos lineas
 
+        # Removemos archivos de datos del usuario eliminado
         if os.path.exists(f"./datos/{nombre}.cli"):
             os.remove(f"./datos/{nombre}.cli")
 
         if os.path.exists(f"./datos/{nombre}.pro"):
             os.remove(f"./datos/{nombre}.pro")
+            
+        if os.path.exists(f"./datos/{nombre}.mov"):
+            os.remove(f"./datos/{nombre}.mov")
 
 
 def cambioUsuario():
+    """ Cambiar de cuenta usando usuario y contraseña para obtener el id/serial """
     while True:
         os.system("cls")
-        print("CAMBIAR DE USUARIO")
+        mostrarUsuarios()
 
-        nombre = input("Nombre: ")
-        clave = input("Clave: ")
+        print(40*"-")
+        print("\tCAMBIAR DE USUARIO")
+        print(40*"-")
+
+        nombre = input("\n Nombre: ")
+        clave = input("\n Clave: ")
         id = ""
 
         with open("usuarios.log", "r") as f:
             for linea in f:
-                datos = linea.replace("\n", "").split("|") # nombre,clave,id/serial
-                if nombre == datos[0] and clave in datos[1]:
+                # [nombre,clave,id/serial]
+                datos = linea.split("|") 
+                if nombre.lower() == datos[0].lower() and clave in datos[1]:
                     id = datos[2]
                     break
         
         if id == "":
-            print("Las credenciales ingresadas no se encuentran registradas")
-            input("\nEnter...")
+            print("\n"); print(60*"-")
+            print(" !!!Las credenciales ingresadas no se encuentran registradas!!!")
+            input("Enter...")
             break
 
+        # Establecemos serial
         with open("actual_id", "w") as f:
             f.write(id)
 
-        print(f"\nSesión iniciada como {nombre}")
-        input("\nEnter...")
+        print("\n"); print(50*"-")
+        print(f"Sesión iniciada como {nombre}")
+        input("Enter...")
         break
 
 def cambioClave():
-    """ Cambia la contraseña del usuario actual basandose en su id/serial"""
+    """ Cambia la contraseña del usuario actual basandose en su id/serial """
 
     os.system("cls")
-    print("CAMBIAR CONTRASEÑA")
-    nueva_clave = input("\nNueva clave: ")
+    print(40*"-")
+    print("\tCAMBIAR CONTRASEÑA")
+    print(40*"-")
+    print(f"\tUsuario actual: {obtenerNombre()}")
 
+    nueva_clave = input("\n Nueva clave: ")
+
+    # Id sesión actual
     with open("actual_id", "r") as f:
-        actual_id = f.read() # sesion
+        actual_id = f.read() 
 
     # Remplazamos
     for linea in fileinput.input("usuarios.log", inplace=True):
-        datos = linea.replace("\n", "").split("|") # nombre,clave,id/serial
+        # [nombre,clave,id/serial]
+        datos = linea.split("|")
 
         if actual_id in linea:
             print(f"{datos[0]}|{nueva_clave}|{datos[2]}")
@@ -146,7 +186,9 @@ def cambioClave():
 
         print(linea, end='') 
 
-    input("\nEnter...")
+    print("\n"); print(50*"-")
+    print(" !!!Contraseña cambiada con éxito!!!")
+    input("Enter...")
 
 
 # ----------------------- MANEJO DE CLIENTES --------------------------#
