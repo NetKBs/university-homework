@@ -9,38 +9,35 @@ def serial():
             + string.digits) for n in range(32)])
 
 def obtenerNombre():
+    """ Devuelve el nombre de usuario de la cuenta actual 
+        usando el serial de referencia"""
+
     with open("actual_id", "r") as f:
-        id = f.read()
+        id = f.read() # serial
 
     with open("usuarios.log", "r") as f:
         for linea in f:
             if id in linea:
                 return linea[:linea.find("|")]
 
-def usuarioDuplicado(nombre):
-    with open("usuarios.log", "r") as f: 
-        for linea in f: 
-            if nombre in linea:
-                return True
+def duplicado(objetivo, dato):
+    """"
+        Devuelve si existe un duplicado de cierto dato en un archivo
+        Recibe el parámetro objetivo que especifica que queremos comprar, este acepta 'usuario, producto o cliente'
+        el segundo parámetro dato, será el que se verificará si tiene un duplicado 
+    """
+    if objetivo == "usuario":
+        ruta = "usuarios.log" 
+    elif objetivo == "producto":
+        ruta = f"./datos/{obtenerNombre()}.pro" 
+    elif objetivo == "cliente":
+        ruta = f"./datos/{obtenerNombre()}.cli"
 
-    return False
-
-def productoDuplicado(producto):
-    with open(f"./datos/{obtenerNombre()}.pro", "r") as f: 
-        for linea in f: 
-            if producto.lower() in linea.lower():
-                return True
-
-    return False
-
-def clienteDuplicado(cliente):
-    with open(f"./datos/{obtenerNombre()}.cli", "r") as f: 
+    with open(ruta, "r") as f:
         for linea in f:
-            if cliente.lower() in linea.lower():
+            if dato.lower() in linea.lower(): # ignoramos mayus/minus
                 return True
-    
     return False
-
 
 # ----------------------- MANEJO DE USUARIOS --------------------------#
 def mostrarUsuarios():
@@ -59,7 +56,7 @@ def nuevoUsuario():
     print("CREAR NUEVO USUARIO\n")
 
     nombre = input("Nombre: ").strip()
-    while usuarioDuplicado(nombre):
+    while duplicado("usuario", nombre):
         print("Ese usuario ya existe")    
         nombre = input("Nombre: ").strip()
 
@@ -166,7 +163,7 @@ def mostrarClientes():
             print(f"* {datos[0]} {datos[1]} {datos[2]} {datos[3]}")
 
 def agregarClientes(nombre, ci, compras, gastos):
-    if not clienteDuplicado(nombre):
+    if not duplicado("cliente", nombre):
         with open(f"./datos/{obtenerNombre()}.cli", "a") as f:
             f.write(f"{nombre}|{ci}|{compras}|{gastos}")
             f.write("\n")
@@ -219,7 +216,7 @@ def agregarProductos():
     while not cantidad.isdigit() or cantidad == "0": # no es un entero
         cantidad = input("Valor inválido\nCantidad: ").strip()
 
-    if not productoDuplicado(producto):
+    if not duplicado("producto", producto):
         with open(f"./datos/{obtenerNombre()}.pro", "a") as f:
             f.write(f"{producto}|{cantidad}")
             f.write("\n")
@@ -308,7 +305,7 @@ def nuevaFactura():
     while True:
         producto = input("\nElegir Producto: ").strip()
 
-        if not productoDuplicado(producto):
+        if not duplicado("producto", producto):
             input("Ese producto no existe\nEnter...")
             os.system("cls")
             mostrarProductos()
