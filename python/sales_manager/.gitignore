@@ -1,5 +1,6 @@
 /datos
-
+# session actual
 actual_id
 
+# users access
 usuarios.log
