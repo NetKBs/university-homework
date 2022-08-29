@@ -295,7 +295,7 @@ def agregarProductos():
 
     cantidad = input(" Cantidad: ").strip()
     while not cantidad.isdigit() or cantidad == "0": # no es un entero
-        cantidad = input("Valor inválido\nCantidad: ").strip()
+        cantidad = input("\n Cantidad: ").strip()
 
     if not duplicado("producto", producto): # Producto nuevo
         with open(f"./datos/{obtenerNombre()}.pro", "a") as f:
@@ -409,7 +409,7 @@ def nuevaFactura():
 
     cedula = input(" Cédula: ").strip() 
     while not cedula.isdigit(): # no es un entero
-        cedula = input("Valor inválido\nCédula: ")
+        cedula = input("\n Cédula: ")
 
     # almacenamos temporales
     registro["cliente"] = cliente
@@ -431,15 +431,19 @@ def nuevaFactura():
             os.system("cls")
             continue
 
-        cantidad = input("Cantidad: ").strip()
+        cantidad = input(" Cantidad: ").strip()
         while not cantidad.isdigit():
-            cantidad = input("Valor inválido\nCantidad: ")
+            cantidad = input("\n Cantidad: ")
 
 
         for linea in fileinput.input(f"./datos/{obtenerNombre()}.pro", inplace=True):
+            # [nombre, cantidad]
             datos = linea.split("|")
+
+            # restamos lo vendido del producto en nuestro inventario
             if producto.lower() == datos[0].lower(): 
                 cantidad_restante = int(datos[1]) - int(cantidad)
+
                 # si es negativo, entonces la cantidad a eliminar será
                 # la cantidad de ese producto disponible
                 if cantidad_restante <= 0:
@@ -453,42 +457,43 @@ def nuevaFactura():
 
         while True:
             try: 
-                precio = float(input("Precio: "))
+                precio = float(input(" Precio: "))
                 break
             except ValueError: 
-                print("Valor inválido")
                 continue
         
+        # Registramos temporales
         registro["productos"].append(producto) 
         registro["precios"].append(precio)
         registro["cantidades"].append(cantidad)
         
         while True:
-            print("\n1.Agregar otro arituclo\t2.Terminar factura")
+            print(60*"-")
+            print("\n 1.Agregar otro arituclo\t\t2.Terminar factura")
             seguir = input(">>> ")
 
             if seguir == "1":
                 os.system("cls")
+
+                # Se desea agregar más artículos, pero en el invetario no hay más
                 if os.stat(f"./datos/{obtenerNombre()}.mov").st_size == 0:
                     input("No hay más productos en el inventario\nEnter...")
                     continue
                 else:
-                    mostrarProductos()
                     break
 
             elif seguir == "2":
                 # cuantos productos en total se compraron
                 cantidad_total = 0
 
-                # Guardamos la factura
+                # Registramos la factura
                 with open(f"./datos/{obtenerNombre()}.mov", "a") as f:
                     f.write(40*"-")
                     f.write(f"\n  {cliente}\t|\tC.I {cedula}\n")
-                    f.write(40*"-")
-                    f.write("\n")
+                    f.write(40*"-"); f.write("\n")
 
                     for i in range(len(registro["productos"])):
-                        # imprimimos los productos, cantidades y sus precios
+                        # productos, cantidades y sus precios
                         f.write(f"{i+1}- {registro['productos'][i]}\t{registro['cantidades'][i]}u ")
                         f.write(f"\tBs{registro['precios'][i]}\n")
 
@@ -499,17 +504,18 @@ def nuevaFactura():
 
                     f.write(40*"-")
                     f.write(f"\n  Monto: Bs{registro['monto']}\n")
-                    f.write(40*"-")
-                    f.write("\n")
-                    f.write(40*"#")
-                    f.write("\n")
+                    f.write(40*"-"); f.write("\n")
+                    f.write(40*"#"); f.write("\n")
+
 
                 # Registramos cliente
                 agregarClientes(cliente, cedula, cantidad_total, registro["monto"])
-
                 return 0 
+
             else:
-                input("\nOpción inválida")
+                print(50*"-")
+                print(" !!!Opción inválida")
+                input(" Enter...")
 
     
 
