@@ -287,11 +287,13 @@ def agregarProductos():
     se sumará la cantidad
     """
     os.system("cls")
-    print("AGREGAR UN PRODUCTO")
+    print(50*"-")
+    print("\tAGREGAR UN PRODUCTO")
+    print(50*"-")
 
-    producto = input("Nombre: ").strip()
+    producto = input("\n Nombre: ").strip()
 
-    cantidad = input("Cantidad: ").strip()
+    cantidad = input(" Cantidad: ").strip()
     while not cantidad.isdigit() or cantidad == "0": # no es un entero
         cantidad = input("Valor inválido\nCantidad: ").strip()
 
@@ -305,11 +307,16 @@ def agregarProductos():
             # [nombre, cantidad]
             datos = linea.split("|")
 
-            if datos[0].lower() in linea.lower():
+            if producto.lower() == datos[0].lower():
                 print(f"{datos[0]}|{int(datos[1]) + int(cantidad)}")
                 continue
 
             print(linea, end='') 
+
+    print("\n"); print(50*"-")
+    print(" !!!Agregado con éxito!!!")
+    input(" Enter...")
+    print(50*"-")
 
 
 def eliminarProductos():
@@ -323,14 +330,14 @@ def eliminarProductos():
     print("\t ELIMINAR PRODUCTO")
     print(50*"-")
 
-    producto = input("Nombre: ").strip()
-    cantidad = input("Cantidad: ").strip()
+    producto = input("\n Nombre: ").strip()
+    cantidad = input(" Cantidad: ").strip()
 
     for linea in fileinput.input(f"./datos/{obtenerNombre()}.pro", inplace=True):
         # [nombre, cantidad]
         datos = linea.split("|")
 
-        if producto in linea: # existe el producto
+        if producto.lower() == datos[0].lower(): # existe el producto
             cantidad_restante = int(datos[1]) - int(cantidad)
 
             if cantidad_restante <= 0: # se elimina del stock
@@ -340,6 +347,12 @@ def eliminarProductos():
                 continue
 
         print(linea, end='') 
+
+    print("\n"); print(50*"-")
+    print(" !!!Operación exitosa!!!")
+    input(" Enter..")
+    print(50*"-")
+
 
 
 # ----------------------- MANEJO DE FACTURAS --------------------------#
