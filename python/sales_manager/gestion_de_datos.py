@@ -208,8 +208,10 @@ def mostrarClientes():
     with open(f"./datos/{obtenerNombre()}.cli", "r") as f:
         # genera conteo desde la primera linea desde 0
         for num, linea in enumerate(f): 
+            # [nombre, cédula,productos totales, gastos totales]
             datos = linea.split("|")
             print(f"{num+1}- {datos[0]} C.I {datos[1]} Tot.Comprado: {datos[2]} Tot.Gastado: Bs{datos[3]}")
+
 
 def agregarClientes(nombre, ci, compras, gastos):
     """
@@ -225,6 +227,7 @@ def agregarClientes(nombre, ci, compras, gastos):
 
     else:
         for linea in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
+            # [nombre, cédula,productos totales, gastos totales]
             datos = linea.split("|")
             if ci == datos[1]: # nos guiamos por su cédula
                 print(f"{datos[0]}|{datos[1]}|{compras + int(datos[2])}|{gastos + float(datos[3])}")
@@ -256,21 +259,33 @@ def eliminarCliente():
     print(" !!!Cliente eliminado con éxito!!!")
     input("Enter...")
 
-# ----------------------- MANEJO DE PRODUCTOS --------------------------#
+# --------------------------------------------------------------------- #
+# ----------------------- MANEJO DE PRODUCTOS ------------------------- #
+# --------------------------------------------------------------------- #
+
 def mostrarProductos():
-    os.system("cls")
-    print("INVENTARIO DE PRODUCTOS REGISTRADOS")
+    """ Muestra todos los productos registrados en el inventario """
 
     if not os.path.exists(f"./datos/{obtenerNombre()}.pro"):
         with open(f"./datos/{obtenerNombre()}.pro", "w"): pass
 
+    os.system("cls")
+    print(60*"-")
+    print("\t INVENTARIO DE PRODUCTOS REGISTRADOS")
+    print(60*"-"); print("\n")
+
     with open(f"./datos/{obtenerNombre()}.pro", "r") as f: 
         for linea in f:
+            # [nombre, cantidad]
             datos = linea.split("|")
-            print(f" *{datos[0]}\t{datos[1]}")
+            print(f" - {datos[0]}\tUnidades: {datos[1]}")
 
 
 def agregarProductos():
+    """ 
+    Agrega un nuevo producto y la cantidad de este. Si el producto ya existe solo 
+    se sumará la cantidad
+    """
     os.system("cls")
     print("AGREGAR UN PRODUCTO")
 
@@ -280,14 +295,15 @@ def agregarProductos():
     while not cantidad.isdigit() or cantidad == "0": # no es un entero
         cantidad = input("Valor inválido\nCantidad: ").strip()
 
-    if not duplicado("producto", producto):
+    if not duplicado("producto", producto): # Producto nuevo
         with open(f"./datos/{obtenerNombre()}.pro", "a") as f:
             f.write(f"{producto}|{cantidad}")
             f.write("\n")
 
-    else:
+    else: # Ya existe el producto
         for linea in fileinput.input(f"./datos/{obtenerNombre()}.pro", inplace=True):
-            datos = linea.split()
+            # [nombre, cantidad]
+            datos = linea.split("|")
 
             if datos[0].lower() in linea.lower():
                 print(f"{datos[0]}|{int(datos[1]) + int(cantidad)}")
@@ -297,17 +313,27 @@ def agregarProductos():
 
 
 def eliminarProductos():
+    """
+        Elimina cierta cantidad de un producto. Si se elimina más de lo que hay de cierto producto
+        se considera fuera de stock, por lo tanto se elimina completamente.
+     """
     mostrarProductos()
-    print("ELIMINAR PRODUCTO")
+
+    print(50*"-")
+    print("\t ELIMINAR PRODUCTO")
+    print(50*"-")
+
     producto = input("Nombre: ").strip()
     cantidad = input("Cantidad: ").strip()
 
     for linea in fileinput.input(f"./datos/{obtenerNombre()}.pro", inplace=True):
-        datos = linea.split()
-        if producto in linea: 
+        # [nombre, cantidad]
+        datos = linea.split("|")
+
+        if producto in linea: # existe el producto
             cantidad_restante = int(datos[1]) - int(cantidad)
 
-            if cantidad_restante <= 0:
+            if cantidad_restante <= 0: # se elimina del stock
                 continue
             else:
                 print(f"{datos[0]}|{cantidad_restante}")
