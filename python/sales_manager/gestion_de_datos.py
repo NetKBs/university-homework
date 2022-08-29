@@ -314,7 +314,7 @@ def agregarProductos():
             print(linea, end='') 
 
     print("\n"); print(50*"-")
-    print(" !!!Agregado con éxito!!!")
+    print(" !!!Producto agregado con éxito!!!")
     input(" Enter...")
     print(50*"-")
 
@@ -354,14 +354,17 @@ def eliminarProductos():
     print(50*"-")
 
 
+# -------------------------------------------------------------------- #
+# ----------------------- MANEJO DE FACTURAS ------------------------- #
+# -------------------------------------------------------------------- #
 
-# ----------------------- MANEJO DE FACTURAS --------------------------#
 def mostrarFacturas():
-    os.system("cls")
-    print("")
+    """ Muestra un historial de todas las facturas efectuadas por el usuario """
 
     if not os.path.exists(f"./datos/{obtenerNombre()}.mov"):
         with open(f"./datos/{obtenerNombre()}.mov", "w"): pass
+
+    os.system("cls")
 
     with open(f"./datos/{obtenerNombre()}.mov", "r") as f:
         for linea in f:
@@ -369,9 +372,12 @@ def mostrarFacturas():
    
 
 def nuevaFactura():
-    os.system("cls")
-
-
+    """ 
+        Crea una nueva factura utilizando exclusivamente productos disponibles en el inventario
+        y registrando los datos del cliente que efectuó la compra. Si el cliente ha hecho compras
+        previas se actualizarán datos
+    """
+    
     if not os.path.exists(f"./datos/{obtenerNombre()}.pro"):
         with open(f"./datos/{obtenerNombre()}.pro", "w"): pass
 
@@ -383,7 +389,9 @@ def nuevaFactura():
     if not os.path.exists(f"./datos/{obtenerNombre()}.mov"):
         with open(f"./datos/{obtenerNombre()}.mov", "w"): pass
 
-    # donde se guardarán los previos
+    os.system("cls")
+
+    # diccionario para almacenar temporalmente los datos de la factura
     registro = {
         "cliente":"",
         "cedula":"" ,
@@ -393,25 +401,34 @@ def nuevaFactura():
         "monto": 0
     }
 
-    print("NUEVA FACTURA")
+    print(50*"-")
+    print("\t NUEVA FACTURA")
+    print(50*"-")
 
-    cliente = input("Nombre del Cliente: ").strip()
+    cliente = input("\n Nombre del Cliente: ").strip()
 
-    cedula = input("Cédula: ").strip() 
+    cedula = input(" Cédula: ").strip() 
     while not cedula.isdigit(): # no es un entero
         cedula = input("Valor inválido\nCédula: ")
 
+    # almacenamos temporales
     registro["cliente"] = cliente
     registro["cedula"] = cedula
-    mostrarProductos()
 
-    while True:
-        producto = input("\nElegir Producto: ").strip()
+    while True: # loop para el agrego de productos
+        mostrarProductos()
+
+        print(50*"-")
+        print("\tElige un producto")
+        print(50*"-")
+
+        producto = input("\n Producto: ").strip()
 
         if not duplicado("producto", producto):
-            input("Ese producto no existe\nEnter...")
+            print("\n"); print(50*"-")
+            print(" !!!Ese producto no existe!!!")
+            input(" Enter...")
             os.system("cls")
-            mostrarProductos()
             continue
 
         cantidad = input("Cantidad: ").strip()
