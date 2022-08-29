@@ -141,7 +141,7 @@ def cambioUsuario():
             for linea in f:
                 # [nombre,clave,id/serial]
                 datos = linea.split("|") 
-                if nombre.lower() == datos[0].lower() and clave in datos[1]:
+                if nombre.lower() == datos[0].lower() and clave == datos[1]:
                     id = datos[2]
                     break
         
@@ -156,8 +156,8 @@ def cambioUsuario():
             f.write(id)
 
         print("\n"); print(50*"-")
-        print(f"Sesión iniciada como {nombre}")
-        input("Enter...")
+        print(f" !!!Sesión iniciada como {nombre}!!!")
+        input(" Enter...")
         break
 
 def cambioClave():
@@ -190,21 +190,34 @@ def cambioClave():
     print(" !!!Contraseña cambiada con éxito!!!")
     input("Enter...")
 
+# -------------------------------------------------------------------- #
+# ----------------------- MANEJO DE CLIENTES ------------------------- #
+# -------------------------------------------------------------------- #
 
-# ----------------------- MANEJO DE CLIENTES --------------------------#
 def mostrarClientes():
-    os.system("cls")
-    print("CLIENTES")
-
+    """ Muestra la liste de clientes registrados luego de haber realizado una factura """
+    # existe o no el archivo de clientes para este usuario
     if not os.path.exists(f"./datos/{obtenerNombre()}.cli"):
         with open(f"./datos/{obtenerNombre()}.cli", "w"): pass
 
+    os.system("cls")
+    print(50*"-")
+    print("\t\t CLIENTES")
+    print(50*"-"); print("\n")
+
     with open(f"./datos/{obtenerNombre()}.cli", "r") as f:
-        for linea in f:
+        # genera conteo desde la primera linea desde 0
+        for num, linea in enumerate(f): 
             datos = linea.split("|")
-            print(f"* {datos[0]} {datos[1]} {datos[2]} {datos[3]}")
+            print(f"{num+1}- {datos[0]} C.I {datos[1]} Tot.Comprado: {datos[2]} Tot.Gastado: Bs{datos[3]}")
 
 def agregarClientes(nombre, ci, compras, gastos):
+    """
+        Agrega un cliente nuevo desde los datos de una factura. Si el cliente existe se
+        actualizarán sus datos. Recibe nombre, cédula, cantidad de compras y total de gastos
+     """
+    
+    # cliente no registrado
     if not duplicado("cliente", nombre):
         with open(f"./datos/{obtenerNombre()}.cli", "a") as f:
             f.write(f"{nombre}|{ci}|{compras}|{gastos}")
@@ -213,26 +226,35 @@ def agregarClientes(nombre, ci, compras, gastos):
     else:
         for linea in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
             datos = linea.split("|")
-            if ci == datos[1]: 
-                print(f"* {datos[0]} {datos[1]} {compras + int(datos[2])} {gastos + float(datos[3])}")
+            if ci == datos[1]: # nos guiamos por su cédula
+                print(f"{datos[0]}|{datos[1]}|{compras + int(datos[2])}|{gastos + float(datos[3])}")
 
         
 def eliminarCliente():
+    """ Eliminar un cliente registrado mediante su cédula """
+
     if os.stat(f"./datos/{obtenerNombre()}.cli").st_size == 0:
         input("No hay clientes para eliminar\nEnter...")
         return 1
 
     mostrarClientes()
-    print("ELIMINAR CLIENTE")
-    cedula = input("Cedula: ").strip()
-    while not cedula.isdigit():
+    print(50*"-")
+    print("\tELIMINAR CLIENTE")
+    print(50*"-")
+
+    cedula = input("\n Cedula: ").strip()
+    while not cedula.isdigit(): # no es un número entero
         cedula = input("Cedula: ").strip()
 
     for linea in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
-        if cedula in linea: # eliminamos cliente
-            continue
+        if cedula in linea: 
+            continue # eliminamos cliente
+
         print(linea, end='') 
 
+    print("\n"); print(50*"-")
+    print(" !!!Cliente eliminado con éxito!!!")
+    input("Enter...")
 
 # ----------------------- MANEJO DE PRODUCTOS --------------------------#
 def mostrarProductos():
