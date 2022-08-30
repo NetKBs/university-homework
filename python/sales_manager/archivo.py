@@ -5,8 +5,12 @@ def inicio():
 
     while True:
         os.system("cls")
-        print("[1]-Usuarios\n[2]-Clientes\n[3]-Productos\n[4]-Cambio de usuario\n[5]-Cambio de claves\n[6]-Atrás")
-        opcion = input(">>> ")
+        print(40*"-"); print("\tMenú Archivo"); print(40*"-")
+        print(f" Usuario actual: {gestion_de_datos.obtenerNombre()}\n")
+        print(40*"-")
+
+        print("\n[1]- Usuarios\n[2]- Clientes\n[3]- Productos\n[4]- Cambio de usuario\n[5]- Cambio de claves\n[6]- Atrás")
+        opcion = input("\n >>> ")
 
         if opcion == "1": #USUARIOS
             while True:
@@ -73,4 +77,6 @@ def inicio():
             break
 
         else:
-            input("Invalido")
+            print(40*"-")
+            print(" !!!Opción inválida!!!")
+            input(" Enter...")

@@ -10,14 +10,14 @@ def main():
     if not os.path.exists("usuarios.log"):
         with open("usuarios.log", "w"): pass
 
-    # si el registro de usuarios está vacío
-    # fuerza un registro
+    # si el registro de usuarios está vacío forzamos un registro
     if os.stat("usuarios.log").st_size == 0: 
         gestion_de_datos.nuevoUsuario()
+
         # iniciamos manualmente la sesion con el  ID
         with open("usuarios.log", "r") as f:
             txt = f.read()
-            pos = txt.find("|", txt.find("|")+1)
+            pos = txt.find("|", txt.find("|")+1) # posición del id
             id = txt[pos+1:] # serial id
 
         # establacemos id
@@ -26,23 +26,26 @@ def main():
 
     while True: 
         os.system("cls") # limpiar consola
-        print(f"Sesión de {gestion_de_datos.obtenerNombre()}\n")
+        print("-"*50); print("\tSistema de ventas \"Trinidad\""); print("-"*50)
 
-        print("[1]-Archivo\n[2]-Movimientos\n[3]-Ayuda\n[4]-Salir")
-        opcion = input(">>> ")
+        print(f" Usuario actual: {gestion_de_datos.obtenerNombre()}\n")
+        print(50*"-")
+
+        print("\n[1]- Archivo\n[2]- Movimientos\n[3]- Ayuda\n[4]- Salir")
+        opcion = input("\n >>> ")
         
         if opcion == "4": # SALIR
             break 
         
         elif opcion == "3": # AYUDA
             os.system("cls")
-            print("#"*28); print("Sistema de ventas \"Trinidad\""); print("#"*29)
+            print("-"*50); print("\tSistema de ventas \"Trinidad\""); print("-"*50)
             print("\n")
-            print("#"*28); print("#Estudiante: | Diego Ascanio#"); print("#"*29)
-            print("#"*28); print("#Cédula: | 31.354.306       #"); print("#"*29)
-            print("#"*28); print("#Semestre I | Sección 05    #"); print("#"*29)
+            print(" Estudiante: | Diego Ascanio"); print("-"*50)
+            print("\n Cédula: | 31.354.306       "); print("-"*50)
+            print("\n Semestre I | Sección 05    "); print("-"*50)
             
-            input("Enter...")
+            input("\n Enter...")
             
         elif opcion == "2": # MOVIMIENTOS
             movimientos.inicio()
@@ -51,8 +54,9 @@ def main():
             archivo.inicio()
         
         else:
-            print("La opción que elegiste no existe")
-            input("Enter...")
+            print(50*"-")
+            print(" !!!Opción inválida!!!")
+            input(" Enter...")
 
 
 

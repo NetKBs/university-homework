@@ -514,7 +514,7 @@ def nuevaFactura():
 
             else:
                 print(50*"-")
-                print(" !!!Opción inválida")
+                print(" !!!Opción inválida!!!")
                 input(" Enter...")
 
     
