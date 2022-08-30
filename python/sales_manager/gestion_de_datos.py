@@ -80,9 +80,6 @@ def nuevoUsuario():
         f.write(f"{nombre}|{clave}|{id}")
         f.write("\n")
 
-    # establecemos el id/serial
-    with open("actual_id", "w") as f: 
-            f.write(id)
 
     print("\n"); print(40*"-")
     print(" !!!Usuario creado con éxito!!!")
