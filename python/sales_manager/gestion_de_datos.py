@@ -226,15 +226,20 @@ def agregarClientes(nombre, ci, compras, gastos):
         for linea in fileinput.input(f"./datos/{obtenerNombre()}.cli", inplace=True):
             # [nombre, cédula,productos totales, gastos totales]
             datos = linea.split("|")
+
             if ci == datos[1]: # nos guiamos por su cédula
                 print(f"{datos[0]}|{datos[1]}|{compras + int(datos[2])}|{gastos + float(datos[3])}")
+                continue
+            print(linea, end="")
 
         
 def eliminarCliente():
     """ Eliminar un cliente registrado mediante su cédula """
 
     if os.stat(f"./datos/{obtenerNombre()}.cli").st_size == 0:
-        input("No hay clientes para eliminar\nEnter...")
+        print("\n"); print(50*"-")
+        print(" !!!No hay clientes para eliminar!!!")
+        input("Enter...")
         return 1
 
     mostrarClientes()
@@ -379,14 +384,14 @@ def nuevaFactura():
         with open(f"./datos/{obtenerNombre()}.pro", "w"): pass
 
     if os.stat(f"./datos/{obtenerNombre()}.pro").st_size == 0:
-        print("No se puede realizar una factura sin productos en el inventario")
-        input("\nEnter..")
+        print(50*"-")
+        print(" !!!No se puede realizar una factura sin productos en el inventario!!!")
+        input("\n Enter..")
         return 1
 
     if not os.path.exists(f"./datos/{obtenerNombre()}.mov"):
         with open(f"./datos/{obtenerNombre()}.mov", "w"): pass
 
-    os.system("cls")
 
     # diccionario para almacenar temporalmente los datos de la factura
     registro = {
@@ -398,6 +403,7 @@ def nuevaFactura():
         "monto": 0
     }
 
+    os.system("cls")
     print(50*"-")
     print("\t NUEVA FACTURA")
     print(50*"-")
@@ -474,7 +480,9 @@ def nuevaFactura():
 
                 # Se desea agregar más artículos, pero en el invetario no hay más
                 if os.stat(f"./datos/{obtenerNombre()}.mov").st_size == 0:
-                    input("No hay más productos en el inventario\nEnter...")
+                    print(50*"-")
+                    print(" !!!No más productos en el inventario!!!")
+                    input("\n Enter")
                     continue
                 else:
                     break

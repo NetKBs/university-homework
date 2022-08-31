@@ -64,7 +64,9 @@ def inicio():
                 elif opcion == "3":
                     gestion_de_datos.eliminarProductos()
                 else: 
-                    input("Opción inválida\nEnter...")
+                    print(40*"-")
+                    print(" !!!Opción inválida!!!") 
+                    input(" Enter...")
 
 
         elif opcion == "4": # CAMBIO-USER
